@@ -20,12 +20,18 @@ interface DashboardData {
     categories: Category[];
 }
 
-
 const Dashboard = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+    const [activeTab, setActiveTab] = useState<string>(''); // Manage the active tab state
     const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
 
     const handleAddWidgetClick = () => {
+        setActiveTab('Add Widget');
+        setIsSidebarOpen(true);
+    };
+
+    const handleAddCategoryClick = () => {
+        setActiveTab('Categories');
         setIsSidebarOpen(true);
     };
 
@@ -47,6 +53,7 @@ const Dashboard = () => {
         const parsedData: DashboardData = JSON.parse(storedData);
         setDashboardData(parsedData);
     };
+
     useEffect(() => {
         loadDashboardData();
     }, []);
@@ -59,24 +66,26 @@ const Dashboard = () => {
         <div>
             <div className='flex justify-end items-center gap-4'>
                 <button onClick={handleRefresh} className="bg-blue-500 text-white p-2 rounded-lg">
-                    <RefreshCcw  className='w-4 h-4'/>
+                    <RefreshCcw className='w-4 h-4' />
+                </button>
+                <button onClick={handleAddCategoryClick} className="bg-blue-500 text-white p-2 rounded-lg">
+                    + Add Category
                 </button>
 
-                <div className=''>
+                <div>
                     <AddWidget onAddWidgetClick={handleAddWidgetClick} />
                 </div>
-
             </div>
 
             {dashboardData.categories.map(category => (
                 <div key={category.id} className='text-left my-8'>
                     <h2>{category.name}</h2>
-                    <div className='flex justify-start gap-4 '>
+                    <div className='flex justify-start gap-4'>
                         {category.widgets.map(widget => (
                             <Widget key={widget.id} widgetName={widget.name} widgetContent={widget.content} />
                         ))}
                         <AddWidget onAddWidgetClick={handleAddWidgetClick} />
-                        {isSidebarOpen && <Sidebar onClose={handleCloseSidebar} />}
+                        {isSidebarOpen && <Sidebar activeTab={activeTab} onClose={handleCloseSidebar} />}
                     </div>
                 </div>
             ))}
