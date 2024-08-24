@@ -1,6 +1,7 @@
 import { useState } from "react";
 import dashboardData from "./data.json"
 import { addWidget } from "../lib/utils";
+import { Check } from "lucide-react";
 
 const WidgetForm = () => {
     const [formData, setFormData] = useState({
@@ -8,11 +9,13 @@ const WidgetForm = () => {
         content: "",
         categoryId: ""
       })
+    const [buttonText, setButtonText] = useState("Add Widget")
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log(formData)
         addWidget(formData)
+        setButtonText("Widget Added!")
     }
     return (
         <form onSubmit={handleSubmit} className="flex flex-col">
@@ -29,9 +32,10 @@ const WidgetForm = () => {
                     </option>
                 ))}
             </select>
-            <button type="submit" className="bg-black text-white my-12 p-3 rounded-lg">
-                Add Widget
-            </button>
+            <button className="bg-black text-white my-12 p-3 rounded-lg flex items-center justify-center gap-2">
+        {buttonText === "Widget Added!" && <Check className="w-5 h-5 text-green-500"/>}
+        {buttonText}
+      </button>
         </form>
     )
 }
