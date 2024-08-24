@@ -1,0 +1,32 @@
+{
+    "categories": [
+      {
+        "id": "cspm-executive-dashboard",
+        "name": "CSPM Executive Dashboard",
+        "widgets": [
+          {
+            "id": "widget-1",
+            "name": "Security Overview",
+            "content": "Random security overview text."
+          },
+          {
+            "id": "widget-2",
+            "name": "Compliance Status",
+            "content": "Random compliance status text."
+          }
+        ]
+      },
+      {
+        "id": "network-monitoring",
+        "name": "Network Monitoring",
+        "widgets": [
+          {
+            "id": "widget-3",
+            "name": "Traffic Analysis",
+            "content": "Random traffic analysis text."
+          }
+        ]
+      }
+    ]
+  }
+  
