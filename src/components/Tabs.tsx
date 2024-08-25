@@ -24,7 +24,7 @@ const Tabs: React.FC<TabsProps> = ({ children, selectedTab, onTabChange }) => {
 
   return (
     <div className="w-full">
-      <div className="flex gap-8 border-b border-gray-300 dark:border-border-dark">
+      <div className="flex border-b border-gray-300 dark:border-border-dark">
         {children.map((child) => (
           <button
             key={child.props.label}

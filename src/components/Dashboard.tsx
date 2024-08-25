@@ -3,28 +3,26 @@ import Widget from './Widget';
 import AddWidget from './AddWidget';
 import Sidebar from './Sidebar';
 import { RefreshCcw } from 'lucide-react';
+import { DashboardData } from '../data';
+import SearchBar from './SearchBar';
 
-interface Widget {
-    id: string;
-    name: string;
-    content: string;
-}
-
-interface Category {
-    id: string;
-    name: string;
-    widgets: Widget[];
-}
-
-interface DashboardData {
-    categories: Category[];
-}
 
 const Dashboard = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [activeTab, setActiveTab] = useState<string>(''); // Manage the active tab state
     const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+    const [searchQuery, setSearchQuery] = useState<string>('');
 
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
+      };
+
+      const getWidgetSuggestions = (): string[] => {
+        return dashboardData?.categories?.flatMap((category: any) =>
+          category.widgets.map((widget: any) => widget.name)
+        ) || [];
+      };
+      
     const handleAddWidgetClick = () => {
         setActiveTab('Add Widget');
         setIsSidebarOpen(true);
@@ -64,28 +62,43 @@ const Dashboard = () => {
 
     return (
         <div>
-            <div className='flex justify-end items-center gap-4'>
-                <button onClick={handleRefresh} className="bg-blue-500 text-white p-2 rounded-lg">
+            <div className='flex justify-start items-center gap-4'>
+            
+                <button onClick={handleRefresh} className="bg-indigo-400 text-white p-2 rounded-xl">
                     <RefreshCcw className='w-4 h-4' />
                 </button>
-                <button onClick={handleAddCategoryClick} className="bg-blue-500 text-white p-2 rounded-lg">
+                <button onClick={handleAddCategoryClick} className="bg-indigo-400 text-white p-2 rounded-xl">
                     + Add Category
                 </button>
-
                 <div>
                     <AddWidget onAddWidgetClick={handleAddWidgetClick} />
                 </div>
+                <SearchBar onSearch={handleSearch} suggestions={getWidgetSuggestions()} />
             </div>
 
             {dashboardData.categories.map(category => (
                 <div key={category.id} className='text-left my-8'>
-                    <h2>{category.name}</h2>
-                    <div className='flex justify-start gap-4'>
-                        {category.widgets.map(widget => (
-                            <Widget key={widget.id} widgetName={widget.name} widgetContent={widget.content} />
-                        ))}
-                        <AddWidget onAddWidgetClick={handleAddWidgetClick} />
-                        {isSidebarOpen && <Sidebar activeTab={activeTab} onClose={handleCloseSidebar} />}
+                    <h2 className='font-bold py-4 px-1 text-lg'>{category.name}</h2>
+                    <div className='flex justify-start gap-4 flex-wrap'>
+                    {category.widgets.map((widget: any) => {
+              const isHighlighted = searchQuery && widget.name
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase());
+                        console.log("High", isHighlighted);
+              return (
+                <Widget
+                  key={widget.id}
+                  widgetName={widget.name}
+                  widgetContent={widget.content}
+                  isHighlighted={isHighlighted}
+                />
+              );
+            })}
+            <div className='border bg-white p-4 rounded-2xl w-full sm:w-1/2 md:w-1/4 flex justify-center items-center'>
+            <AddWidget onAddWidgetClick={handleAddWidgetClick} />
+            </div>
+                       
+                        {isSidebarOpen && <Sidebar data={dashboardData} activeTab={activeTab} onClose={handleCloseSidebar} />}
                     </div>
                 </div>
             ))}

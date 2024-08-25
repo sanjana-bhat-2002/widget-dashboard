@@ -53,7 +53,44 @@ const addWidget = (newWidget: WidgetData) => {
   localStorage.setItem('dashboardData', JSON.stringify(dashboardData));
 
   console.log('Data updated successfully in localStorage.');
-  
+
 };
 
-export { storeData, addWidget}
+
+const removeWidget = (widgetId: string, categoryId: string) => {
+  const storedData = localStorage.getItem('dashboardData');
+
+  if (!storedData) {
+    console.error('No data found in localStorage.');
+    return;
+  }
+
+  const dashboardData = JSON.parse(storedData);
+
+  const category = dashboardData.categories.find(
+    (cat: any) => cat.id === categoryId
+  );
+
+  if (!category) {
+    console.error('Category not found.');
+    return;
+  }
+
+  const widgetIndex = category.widgets.findIndex(
+    (widget: any) => widget.id === widgetId
+  );
+
+  if (widgetIndex === -1) {
+    console.error('Widget not found.');
+    return;
+  }
+
+  category.widgets.splice(widgetIndex, 1);
+
+  localStorage.setItem('dashboardData', JSON.stringify(dashboardData));
+
+  console.log('Widget removed successfully from localStorage.');
+};
+
+
+export { storeData, addWidget, removeWidget}
